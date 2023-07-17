@@ -41,7 +41,6 @@ struct DailyBoxOffice: Decodable, Hashable {
     let openDate: String
     let audienceAccumulation: String
     let audienceCount: String
-    let identifier = UUID()
 
     enum CodingKeys: String, CodingKey {
         case orderNumber = "rnum"
@@ -53,14 +52,6 @@ struct DailyBoxOffice: Decodable, Hashable {
         case openDate = "openDt"
         case audienceAccumulation = "audiAcc"
         case audienceCount = "audiCnt"
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(identifier)
-    }
-
-    static func == (lhs: DailyBoxOffice, rhs: DailyBoxOffice) -> Bool {
-        lhs.identifier == rhs.identifier
     }
 
 }
