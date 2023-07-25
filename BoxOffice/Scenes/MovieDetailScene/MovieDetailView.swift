@@ -21,13 +21,15 @@ final class MovieDetailView: UIView {
 
         static let minuteText = "분"
 
-        static let movieImageLeadingAndTrailingInset = 20.0
-        static let movieImageHeightMulitplierRatio = 1.3
+        static let movieImageWidth = 200.0
+        static let movieImageHeight = 300.0
+        static let movieImageConerRadius = 10.0
+        static let movieImageTopInset = 20.0
 
-        static let movieDetailVerticalStackViewSpacing = 2.0
-        static let movieDetailVerticalStackViewTopAnchorInset = 10.0
+        static let movieDetailVerticalStackViewSpacing = 8.0
+        static let movieDetailVerticalStackViewTopAnchorInset = 30.0
         static let movieDetailVerticalStackViewBottomAnchorInset = 10.0
-        static let movieDetailVerticalStackViewLeadingAndTrailingInset = 10.0
+        static let movieDetailVerticalStackViewLeadingAndTrailingInset = 45.0
 
         static let keyLabelWidthMultiplierRatio = 0.3
     }
@@ -52,7 +54,9 @@ final class MovieDetailView: UIView {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(systemName: Constant.noneImageCallName )
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = MovieDetailViewConstant.movieImageConerRadius
+        imageView.clipsToBounds = true
 
         return imageView
     }()
@@ -181,10 +185,10 @@ final class MovieDetailView: UIView {
 
     private func configureMovieImageViewLayoutConstraint() {
         NSLayoutConstraint.activate([
-            movieImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            movieImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: MovieDetailViewConstant.movieImageLeadingAndTrailingInset),
-            movieImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -MovieDetailViewConstant.movieImageLeadingAndTrailingInset),
-            movieImageView.heightAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: MovieDetailViewConstant.movieImageHeightMulitplierRatio),
+            movieImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: MovieDetailViewConstant.movieImageTopInset),
+            movieImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            movieImageView.widthAnchor.constraint(equalToConstant: MovieDetailViewConstant.movieImageWidth),
+            movieImageView.heightAnchor.constraint(equalToConstant: MovieDetailViewConstant.movieImageHeight),
         ])
     }
 

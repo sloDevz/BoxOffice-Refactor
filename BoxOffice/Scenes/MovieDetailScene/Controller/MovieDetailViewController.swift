@@ -44,6 +44,7 @@ final class MovieDetailViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(movieDetailView)
         fetchBoxOfficeDetailData()
+        navigationController?.navigationBar.topItem?.backButtonTitle = ""
     }
 
     private func fetchBoxOfficeDetailData() {
