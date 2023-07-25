@@ -9,8 +9,12 @@ import UIKit
 
 final class DailyBoxOfficeViewController: UIViewController {
 
+    // MARK: - Constant
     private enum Section {
         case main
+    }
+    private enum Constant {
+        static let headerViewElementKind: String = "section-header"
     }
 
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, DailyBoxOffice>
@@ -18,6 +22,7 @@ final class DailyBoxOfficeViewController: UIViewController {
 
     private let loadingIndicatorView = UIActivityIndicatorView(style: .large)
     private let boxOfficeManager = NetworkAPIManager()
+    private let networkDispatcher = NetworkDispatcher()
     private lazy var dataSource: DataSource = configureDataSource()
     private lazy var dailyBoxOfficeCollectionView : UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -25,12 +30,18 @@ final class DailyBoxOfficeViewController: UIViewController {
             DailyBoxOfficeCell.self,
             forCellWithReuseIdentifier: DailyBoxOfficeCell.identifier
         )
+        collectionView.register(
+            DailyBoxOfficeHeaderCell.self,
+            forSupplementaryViewOfKind: Constant.headerViewElementKind,
+            withReuseIdentifier: DailyBoxOfficeHeaderCell.reuseableIdentifier
+        )
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
 
         return collectionView
     }()
-    private var movies = [DailyBoxOffice]() {
+    private var movies = [DailyBoxOffice]()
+    private var headerMovie = HeaderMovie() {
         didSet {
             applySnapShot()
         }
@@ -57,10 +68,21 @@ final class DailyBoxOfficeViewController: UIViewController {
     private func createLayout() -> UICollectionViewCompositionalLayout {
         let layout = UICollectionViewCompositionalLayout { section, layoutEnvironment in
             let configuration = UICollectionLayoutListConfiguration(appearance: .plain)
-
-            return NSCollectionLayoutSection.list(
+            let headerSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .fractionalWidth(0.5)
+            )
+            let header = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: headerSize,
+                elementKind: Constant.headerViewElementKind,
+                alignment: .top
+            )
+            let listSection = NSCollectionLayoutSection.list(
                 using: configuration,
                 layoutEnvironment: layoutEnvironment)
+            listSection.boundarySupplementaryItems = [header]
+
+            return listSection
         }
 
         return layout
@@ -91,6 +113,21 @@ final class DailyBoxOfficeViewController: UIViewController {
 
             return cell
         }
+        dataSource.supplementaryViewProvider = {(
+            collectionView: UICollectionView,
+            kind: String,
+            indexPath: IndexPath) -> UICollectionReusableView? in
+
+            guard let supplementaryView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: DailyBoxOfficeHeaderCell.reuseableIdentifier,
+                for: indexPath) as? DailyBoxOfficeHeaderCell else
+            {
+                fatalError("Cannot create header view")
+            }
+            supplementaryView.configureHeader(movie: self.headerMovie)
+            return supplementaryView
+        }
         return dataSource
     }
 
@@ -103,7 +140,34 @@ final class DailyBoxOfficeViewController: UIViewController {
             do {
                 let decodedData = try await boxOfficeManager.fetchData(to: BoxOffice.self, endPoint: boxOfficeEndPoint)
                 guard let boxOffice = decodedData as? BoxOffice else { return }
-                movies = boxOffice.result.dailyBoxOffices
+
+                var decodedMovies = boxOffice.result.dailyBoxOffices
+                let firstRankedMovie = decodedMovies.removeFirst()
+
+                let imageURLEndPoint = SearchImageAPIEndPoint.moviePoster(name: firstRankedMovie.movieName)
+                let decodedImageURLData = try await boxOfficeManager.fetchData(
+                    to: SearchedImage.self,
+                    endPoint: imageURLEndPoint
+                )
+                guard let imageURLModel = decodedImageURLData as? SearchedImage else { return }
+                guard let imageURLString = imageURLModel.imageURL else { return }
+                guard let imageURL = URL(string: imageURLString) else { return }
+                let imageURLRequest = URLRequest(url: imageURL)
+                let imageResult = try await networkDispatcher.performRequest(imageURLRequest)
+
+                movies = decodedMovies
+
+                switch imageResult {
+                case .success(let data):
+                    headerMovie = HeaderMovie(title: firstRankedMovie.movieName,
+                                              rank: firstRankedMovie.rank,
+                    poster: UIImage(data: data)
+                    )
+                case .failure(let error):
+                    print(error.errorDescription)
+                }
+
+
             } catch {
                 print(error.localizedDescription)
             }
@@ -160,7 +224,8 @@ extension DailyBoxOfficeViewController: UICollectionViewDelegate {
         guard let movie = dataSource.itemIdentifier(for: indexPath) else { return }
         let movieDetailViewController = MovieDetailViewController(
             movie: movie,
-            BoxOfficeAPIManager: boxOfficeManager
+            boxOfficeAPIManager: boxOfficeManager,
+            networkDispatcher: networkDispatcher
         )
         movieDetailViewController.navigationItem.title = movie.movieName
         dailyBoxOfficeCollectionView.deselectItem(at: indexPath, animated: true)

@@ -29,10 +29,10 @@ final class MovieDetailViewController: UIViewController {
         return view
     }()
 
-    init(movie: DailyBoxOffice, BoxOfficeAPIManager: NetworkAPIManager) {
+    init(movie: DailyBoxOffice, boxOfficeAPIManager: NetworkAPIManager, networkDispatcher: NetworkDispatcher) {
         self.movie = movie
-        self.networkAPIManager = BoxOfficeAPIManager
-        self.networkDispatcher = NetworkDispatcher()
+        self.networkAPIManager = boxOfficeAPIManager
+        self.networkDispatcher = networkDispatcher
         super.init(nibName: nil, bundle: nil)
     }
 
