@@ -13,12 +13,19 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
 
     private enum Constants {
         static let titleLabelFontSize = 20.0
+        static let titleLabelTopInset = 15.0
+        static let titleLabelLeadingInset = 20.0
+        static let titleLabelTrailingInset = 10.0
+
         static let subTitleLabelFontSize = 15.0
-        static let titleLabelBackgroundheight = 30.0
-        static let titleLabelBackgroundWidth = 350.0
+        static let subTitleLabelTopInsetWithTitleLabel = 5.0
 
         static let rankLabelFontSize = 50.0
         static let rankLabelBackgroundheightWidth = 70.0
+        static let rankedMarkWidthHeightSize = 70.0
+
+        static let moviePosterWidth = 150.0
+        static let moviePosterHeight = 200.0
     }
     // MARK: - Properties
 
@@ -98,20 +105,20 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
         ])
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 15),
-            titleLabel.leadingAnchor.constraint(equalTo: moviePoster.trailingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Constants.titleLabelTopInset),
+            titleLabel.leadingAnchor.constraint(equalTo: moviePoster.trailingAnchor, constant: Constants.titleLabelLeadingInset),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.titleLabelTrailingInset),
         ])
         subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            subTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
+            subTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constants.subTitleLabelTopInsetWithTitleLabel),
             subTitleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             subTitleLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor)
         ])
         topRankMark.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            topRankMark.widthAnchor.constraint(equalToConstant: 70),
-            topRankMark.heightAnchor.constraint(equalToConstant: 70),
+            topRankMark.widthAnchor.constraint(equalToConstant: Constants.rankedMarkWidthHeightSize),
+            topRankMark.heightAnchor.constraint(equalToConstant: Constants.rankedMarkWidthHeightSize),
             topRankMark.topAnchor.constraint(equalTo: topAnchor),
             topRankMark.leadingAnchor.constraint(equalTo: leadingAnchor)
         ])
@@ -126,8 +133,8 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
         NSLayoutConstraint.activate([
             moviePoster.leadingAnchor.constraint(equalTo: leadingAnchor),
             moviePoster.centerYAnchor.constraint(equalTo: centerYAnchor),
-            moviePoster.widthAnchor.constraint(equalToConstant: 150),
-            moviePoster.heightAnchor.constraint(equalToConstant: 200)
+            moviePoster.widthAnchor.constraint(equalToConstant: Constants.moviePosterWidth),
+            moviePoster.heightAnchor.constraint(equalToConstant: Constants.moviePosterHeight)
         ])
     }
 
