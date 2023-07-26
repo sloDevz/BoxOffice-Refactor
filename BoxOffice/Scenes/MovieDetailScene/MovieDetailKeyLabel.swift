@@ -9,8 +9,9 @@ import UIKit
 
 final class MovieDetailKeyLabel: UILabel {
 
-    private enum MovieDetailKeyLabelConstant {
+    private enum Constants {
         static let boldFontSize = 18.0
+        static let defaultTextColorName: String = "DefaultTextColor"
     }
 
     override init(frame: CGRect) {
@@ -29,8 +30,9 @@ final class MovieDetailKeyLabel: UILabel {
     }
 
     private func configureUI() {
-        self.font = UIFont.boldSystemFont(ofSize: MovieDetailKeyLabelConstant.boldFontSize)
+        self.font = UIFont.boldSystemFont(ofSize: Constants.boldFontSize)
         self.textAlignment = .center
+        self.textColor = UIColor(named: Constants.defaultTextColorName)
     }
 
 }

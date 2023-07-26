@@ -12,7 +12,8 @@ final class DailyBoxOfficeCell: UICollectionViewListCell {
     static let identifier = String(describing: DailyBoxOfficeCell.self)
 
     private enum Constants {
-
+        static let applicationBackColorName: String = "backgroundColor"
+        static let defaultTextColorName: String = "DefaultTextColor"
         static let upSymbolName: String = "arrowtriangle.up.fill"
         static let downSymbolName: String = "arrowtriangle.down.fill"
         static let noneChangeOfRankState: String = "-"
@@ -20,13 +21,17 @@ final class DailyBoxOfficeCell: UICollectionViewListCell {
         static let today: String = "오늘 "
         static let total: String = " / 총 "
 
-        static let movieTitleLabelFontSize: CGFloat = 21.0
-        static let audienceLabelFontSize: CGFloat = 17.0
-        static let dailyRankNumberLabelFontSize: CGFloat = 35.0
-        static let dailyRankChangesLabelFontSize: CGFloat = 17.0
+        static let cellHeight: CGFloat = 65.0
 
-        static let rankStackViewWidth: CGFloat = 80
-        static let rankStackViewleadingInset: CGFloat = 10
+        static let UIComponentInset: CGFloat = 20.0
+        static let sideLayoutGuideInset: CGFloat = 25.0
+
+        static let movieTitleLabelFontSize: CGFloat = 21.0
+        static let audienceLabelFontSize: CGFloat = 14.0
+        static let dailyRankNumberLabelFontSize: CGFloat = 35.0
+        static let dailyRankChangesLabelFontSize: CGFloat = 15.0
+
+        static let rankStackViewWidth: CGFloat = 40.0
         static let rankStackViewInset: CGFloat = 7.0
 
         static let titleStackViewInset: CGFloat = 16.0
@@ -43,39 +48,33 @@ final class DailyBoxOfficeCell: UICollectionViewListCell {
     private let movieTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: Constants.movieTitleLabelFontSize)
-
+        label.textColor = .white
         return label
     }()
 
     private let audienceLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: Constants.audienceLabelFontSize)
-
+        label.textColor = UIColor(named: Constants.defaultTextColorName)
         return label
     }()
 
     private let rankNumberLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: Constants.dailyRankNumberLabelFontSize)
-
+        label.textColor = UIColor(named: Constants.defaultTextColorName)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
     private let dailyRankChangesLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: Constants.dailyRankChangesLabelFontSize)
-
+        label.textColor = UIColor(named: Constants.defaultTextColorName)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }()
-
-    private let rankVerticalStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.distribution = .fillProportionally
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-
-        return stackView
     }()
 
     private let titleAudienceVerticalStackView: UIStackView = {
@@ -93,6 +92,7 @@ final class DailyBoxOfficeCell: UICollectionViewListCell {
 
         configureHierarchy()
         configureConstraints()
+        contentView.backgroundColor = UIColor(named: Constants.applicationBackColorName)
     }
 
     required init?(coder: NSCoder) {
@@ -100,9 +100,8 @@ final class DailyBoxOfficeCell: UICollectionViewListCell {
     }
 
     private func configureHierarchy() {
-        addSubview(rankVerticalStackView)
-        rankVerticalStackView.addArrangedSubview(rankNumberLabel)
-        rankVerticalStackView.addArrangedSubview(dailyRankChangesLabel)
+        addSubview(rankNumberLabel)
+        addSubview(dailyRankChangesLabel)
 
         addSubview(titleAudienceVerticalStackView)
         titleAudienceVerticalStackView.addArrangedSubview(movieTitleLabel)
@@ -110,21 +109,21 @@ final class DailyBoxOfficeCell: UICollectionViewListCell {
     }
 
     private func configureConstraints() {
-        let cellHeightConstraint = contentView.heightAnchor.constraint(equalToConstant: 80)
+        let cellHeightConstraint = contentView.heightAnchor.constraint(equalToConstant: Constants.cellHeight)
         cellHeightConstraint.priority = .defaultHigh
         cellHeightConstraint.isActive = true
 
-        rankVerticalStackView.widthAnchor.constraint(
+        rankNumberLabel.widthAnchor.constraint(
             equalToConstant: Constants.rankStackViewWidth).isActive = true
-        rankVerticalStackView.topAnchor.constraint(
+        rankNumberLabel.topAnchor.constraint(
             equalTo: topAnchor,
             constant: Constants.rankStackViewInset).isActive = true
-        rankVerticalStackView.bottomAnchor.constraint(
+        rankNumberLabel.bottomAnchor.constraint(
             equalTo: bottomAnchor,
             constant: -Constants.rankStackViewInset).isActive = true
-        rankVerticalStackView.leadingAnchor.constraint(
+        rankNumberLabel.leadingAnchor.constraint(
             equalTo: leadingAnchor,
-            constant: Constants.rankStackViewleadingInset).isActive = true
+            constant: Constants.sideLayoutGuideInset).isActive = true
 
         titleAudienceVerticalStackView.topAnchor.constraint(
             equalTo: topAnchor,
@@ -133,11 +132,16 @@ final class DailyBoxOfficeCell: UICollectionViewListCell {
             equalTo: bottomAnchor,
             constant: -Constants.titleStackViewInset).isActive = true
         titleAudienceVerticalStackView.leadingAnchor.constraint(
-            equalTo: rankVerticalStackView.trailingAnchor,
-            constant: .zero).isActive = true
-        titleAudienceVerticalStackView.trailingAnchor.constraint(
+            equalTo: rankNumberLabel.trailingAnchor,
+            constant: Constants.UIComponentInset).isActive = true
+        titleAudienceVerticalStackView.trailingAnchor.constraint(equalTo: dailyRankChangesLabel.leadingAnchor, constant: -Constants.UIComponentInset).isActive = true
+
+        dailyRankChangesLabel.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        dailyRankChangesLabel.trailingAnchor.constraint(
             equalTo: trailingAnchor,
-            constant: -Constants.titleStackViewTrailingInset).isActive = true
+            constant: -Constants.sideLayoutGuideInset).isActive = true
+        dailyRankChangesLabel.centerYAnchor.constraint(
+            equalTo: titleAudienceVerticalStackView.centerYAnchor).isActive = true
     }
 
     func configure(with movie: DailyBoxOffice) {

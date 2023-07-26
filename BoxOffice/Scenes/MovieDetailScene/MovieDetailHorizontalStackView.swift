@@ -9,9 +9,10 @@ import UIKit
 
 final class MovieDetailHorizontalStackView: UIStackView {
 
-    private enum MovieDetailHorizontalStackViewConstant {
+    private enum Constants {
         static let topBottomlayoutMargins = 8.0
         static let rightLeftlayoutMargins = 3.0
+        static let detailContentCellColorName = "DetialLabelCellColor"
     }
 
     override init(frame: CGRect) {
@@ -30,16 +31,16 @@ final class MovieDetailHorizontalStackView: UIStackView {
 
     private func configureUI() {
         self.layoutMargins = .init(
-            top: MovieDetailHorizontalStackViewConstant.topBottomlayoutMargins,
-            left: MovieDetailHorizontalStackViewConstant.rightLeftlayoutMargins,
-            bottom: MovieDetailHorizontalStackViewConstant.topBottomlayoutMargins,
-            right: MovieDetailHorizontalStackViewConstant.rightLeftlayoutMargins
+            top: Constants.topBottomlayoutMargins,
+            left: Constants.rightLeftlayoutMargins,
+            bottom: Constants.topBottomlayoutMargins,
+            right: Constants.rightLeftlayoutMargins
         )
         self.isLayoutMarginsRelativeArrangement = true
         self.alignment = .fill
+        self.spacing = 10
         self.axis = .horizontal
-        self.backgroundColor = UIColor(named: "DetialLabelCellColor")
-        self.layer.cornerRadius = 10
+        self.backgroundColor = UIColor(named: Constants.detailContentCellColorName)
     }
 
 }

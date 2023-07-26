@@ -9,6 +9,10 @@ import UIKit
 
 final class MovieDetailValueLabel: UILabel {
 
+    private enum Constants {
+        static let defaultTextColorName: String = "DefaultTextColor"
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
@@ -22,6 +26,7 @@ final class MovieDetailValueLabel: UILabel {
         self.text = Constant.noneText
         self.textAlignment = .left
         self.numberOfLines = .zero
+        self.textColor = UIColor(named: Constants.defaultTextColorName)
     }
 
 }

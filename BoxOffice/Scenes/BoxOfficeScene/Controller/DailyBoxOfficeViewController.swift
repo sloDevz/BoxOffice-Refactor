@@ -15,6 +15,7 @@ final class DailyBoxOfficeViewController: UIViewController {
     }
     private enum Constant {
         static let headerViewElementKind: String = "section-header"
+        static let applicationBackColorName: String = "backgroundColor"
     }
 
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, DailyBoxOffice>
@@ -30,6 +31,7 @@ final class DailyBoxOfficeViewController: UIViewController {
             DailyBoxOfficeCell.self,
             forCellWithReuseIdentifier: DailyBoxOfficeCell.identifier
         )
+        collectionView.backgroundColor = UIColor(named: Constant.applicationBackColorName)
         collectionView.register(
             DailyBoxOfficeHeaderCell.self,
             forSupplementaryViewOfKind: Constant.headerViewElementKind,
@@ -54,10 +56,11 @@ final class DailyBoxOfficeViewController: UIViewController {
         configureCollectionView()
         addIndicatorview()
         fetchBoxOfficeData()
+        navigationItem.title = "Today's Boxoffice"
     }
 
     private func configureAttributes() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor(named: Constant.applicationBackColorName)
     }
 
     private func configureCollectionView() {
@@ -68,7 +71,8 @@ final class DailyBoxOfficeViewController: UIViewController {
 
     private func createLayout() -> UICollectionViewCompositionalLayout {
         let layout = UICollectionViewCompositionalLayout { section, layoutEnvironment in
-            let configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+            var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+            configuration.backgroundColor = UIColor(named: Constant.applicationBackColorName)
             let headerSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
                 heightDimension: .fractionalWidth(0.5)
@@ -82,10 +86,8 @@ final class DailyBoxOfficeViewController: UIViewController {
                 using: configuration,
                 layoutEnvironment: layoutEnvironment)
             listSection.boundarySupplementaryItems = [header]
-
             return listSection
         }
-
         return layout
     }
 
@@ -108,8 +110,6 @@ final class DailyBoxOfficeViewController: UIViewController {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: DailyBoxOfficeCell.identifier,
                 for: indexPath) as? DailyBoxOfficeCell
-            
-            cell?.accessories = [.disclosureIndicator()]
             cell?.configure(with: movie)
 
             return cell
@@ -126,6 +126,7 @@ final class DailyBoxOfficeViewController: UIViewController {
             {
                 fatalError("Cannot create header view")
             }
+            supplementaryView.delegate = self
             if let movie = self.headerMovie, let poster = self.headerMoviePoster {
                 supplementaryView.configureHeader(with: movie, poster: poster)
             }
@@ -171,7 +172,6 @@ final class DailyBoxOfficeViewController: UIViewController {
             } catch {
                 print(error.localizedDescription)
             }
-            navigationItem.title = yesterDay
             removeIndicatorView()
             endRefresh()
         }
@@ -201,6 +201,7 @@ extension DailyBoxOfficeViewController {
 
     private func configureRefreshControl() {
         dailyBoxOfficeCollectionView.refreshControl = UIRefreshControl()
+        dailyBoxOfficeCollectionView.refreshControl?.backgroundColor = UIColor(named: Constant.applicationBackColorName)
         dailyBoxOfficeCollectionView.refreshControl?.addTarget(
             self,
             action: #selector(handleRefreshControl),
@@ -218,7 +219,17 @@ extension DailyBoxOfficeViewController {
 
 }
 
-extension DailyBoxOfficeViewController: UICollectionViewDelegate {
+extension DailyBoxOfficeViewController: UICollectionViewDelegate, HeaderViewHandlerable {
+
+    func headerView(_ movie: DailyBoxOffice, ofSelected headerView: UICollectionReusableView) {
+        let movieDetailViewController = MovieDetailViewController(
+            movie: movie,
+            boxOfficeAPIManager: boxOfficeManager,
+            networkDispatcher: networkDispatcher
+        )
+        movieDetailViewController.navigationItem.title = movie.movieName
+        navigationController?.pushViewController(movieDetailViewController, animated: true)
+    }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let movie = dataSource.itemIdentifier(for: indexPath) else { return }

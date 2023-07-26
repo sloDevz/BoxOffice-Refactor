@@ -7,11 +7,17 @@
 
 import UIKit
 
+protocol HeaderViewHandlerable: AnyObject {
+    func headerView(_ movie: DailyBoxOffice, ofSelected headerView: UICollectionReusableView)
+}
+
 final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
     // MARK: - Constants
     static let reuseableIdentifier = String(describing: DailyBoxOfficeHeaderCell.self)
 
     private enum Constants {
+        static let topRankedMarkImageName: String = "TopRankMark"
+
         static let titleLabelFontSize = 20.0
         static let titleLabelTopInset = 15.0
         static let titleLabelLeadingInset = 20.0
@@ -28,6 +34,9 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
         static let moviePosterHeight = 200.0
     }
     // MARK: - Properties
+    weak var delegate: HeaderViewHandlerable?
+    private var headerMovie: DailyBoxOffice?
+    private var headerMoviePoster: UIImage?
 
     // MARK: - UI Components
     private let titleLabel: UILabel = {
@@ -54,7 +63,7 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
     }()
     private let topRankMark: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "TopRankMark")
+        imageView.image = UIImage(named: Constants.topRankedMarkImageName)
         return imageView
     }()
     private let movieImageBackground: UIImageView = {
@@ -74,7 +83,14 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
     // MARK: - LifeCycle
     override init(frame: CGRect) {
         super.init(frame: frame)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(headerViewTapped))
+        self.addGestureRecognizer(tapGesture)
         setupLayout()
+    }
+
+    @objc private func headerViewTapped() {
+        guard let headerMovie else { return }
+        delegate?.headerView(headerMovie, ofSelected: self)
     }
 
     required init?(coder: NSCoder) {
@@ -83,6 +99,8 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
 
     // MARK: - Public
     func configureHeader(with movie: DailyBoxOffice, poster: UIImage) {
+        headerMovie = movie
+        headerMoviePoster = poster
         configureTitleAndSubTitle(with: movie.movieName)
         movieImageBackground.image = poster
         moviePoster.image = poster

@@ -9,6 +9,11 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
+    private enum Constants {
+        static let applicationBackColorName: String = "backgroundColor"
+        static let defaultTextColorName: String = "DefaultTextColor"
+    }
+
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -18,6 +23,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let rootViewController = DailyBoxOfficeViewController()
         let navigationController = UINavigationController(rootViewController: rootViewController)
+        let appearnace = UINavigationBarAppearance()
+        appearnace.configureWithOpaqueBackground()
+        appearnace.backgroundColor = UIColor(named: Constants.applicationBackColorName)
+        appearnace.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: Constants.defaultTextColorName) ?? .lightGray]
+        navigationController.navigationBar.standardAppearance = appearnace
+        navigationController.navigationBar.scrollEdgeAppearance = appearnace
 
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()

@@ -9,7 +9,7 @@ import UIKit
 
 final class MovieDetailView: UIView {
 
-    private enum MovieDetailViewConstant {
+    private enum Constants {
         static let directorLabelText = "감독"
         static let yearsOfProductionLabelText = "제작년도"
         static let openDateLabelText = "개봉일"
@@ -21,15 +21,20 @@ final class MovieDetailView: UIView {
 
         static let minuteText = "분"
 
+        static let applicationBackColorName: String = "backgroundColor"
+
         static let movieImageWidth = 200.0
         static let movieImageHeight = 300.0
         static let movieImageConerRadius = 10.0
         static let movieImageTopInset = 20.0
 
-        static let movieDetailVerticalStackViewSpacing = 8.0
-        static let movieDetailVerticalStackViewTopAnchorInset = 30.0
+        static let backGroundDarkViewOpacity: Float = 0.8
+        static let cellSeperatorBorderWidth: CGFloat = 2
+
+        static let movieDetailVerticalStackViewSpacing = 4.0
+        static let movieDetailVerticalStackViewTopAnchorInset = 20.0
         static let movieDetailVerticalStackViewBottomAnchorInset = 10.0
-        static let movieDetailVerticalStackViewLeadingAndTrailingInset = 45.0
+        static let movieDetailVerticalStackViewLeadingAndTrailingInset = 40.0
 
         static let keyLabelWidthMultiplierRatio = 0.3
     }
@@ -50,25 +55,51 @@ final class MovieDetailView: UIView {
         return contentView
     }()
 
-    private let movieImageView: UIImageView = {
+    private let movieImageBackgroundView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(systemName: Constant.noneImageCallName )
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = MovieDetailViewConstant.movieImageConerRadius
         imageView.clipsToBounds = true
 
         return imageView
     }()
 
-    private let directorKeyLabel = MovieDetailKeyLabel(text: MovieDetailViewConstant.directorLabelText)
-    private let yearOfProductionKeyLabel = MovieDetailKeyLabel(text: MovieDetailViewConstant.yearsOfProductionLabelText)
-    private let openDateKeyLabel = MovieDetailKeyLabel(text: MovieDetailViewConstant.openDateLabelText)
-    private let runningTimeKeyLabel = MovieDetailKeyLabel(text: MovieDetailViewConstant.runningTimeLabelText)
-    private let movieRatingKeyLabel = MovieDetailKeyLabel(text: MovieDetailViewConstant.movieRatingLabelText)
-    private let nationKeyLabel = MovieDetailKeyLabel(text: MovieDetailViewConstant.nationLabelText)
-    private let genreKeyLabel = MovieDetailKeyLabel(text: MovieDetailViewConstant.genreLabelText)
-    private let actorsKeyLabel = MovieDetailKeyLabel(text: MovieDetailViewConstant.actorsLabelText)
+    private var backgroundDarkView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .black
+        view.layer.opacity = Constants.backGroundDarkViewOpacity
+        return view
+    }()
+
+    private let moviePosterView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(systemName: Constant.noneImageCallName )
+        imageView.contentMode = .scaleAspectFit
+        imageView.layer.cornerRadius = Constants.movieImageConerRadius
+        imageView.clipsToBounds = true
+
+        return imageView
+    }()
+
+    private var stackSeperatorView: UIView {
+        let seperator = UIView()
+        seperator.translatesAutoresizingMaskIntoConstraints = false
+        seperator.widthAnchor.constraint(equalToConstant: Constants.cellSeperatorBorderWidth).isActive = true
+        seperator.backgroundColor = UIColor(named: "backgroundColor")
+        return seperator
+    }
+    
+    private let directorKeyLabel = MovieDetailKeyLabel(text: Constants.directorLabelText)
+    private let yearOfProductionKeyLabel = MovieDetailKeyLabel(text: Constants.yearsOfProductionLabelText)
+    private let openDateKeyLabel = MovieDetailKeyLabel(text: Constants.openDateLabelText)
+    private let runningTimeKeyLabel = MovieDetailKeyLabel(text: Constants.runningTimeLabelText)
+    private let movieRatingKeyLabel = MovieDetailKeyLabel(text: Constants.movieRatingLabelText)
+    private let nationKeyLabel = MovieDetailKeyLabel(text: Constants.nationLabelText)
+    private let genreKeyLabel = MovieDetailKeyLabel(text: Constants.genreLabelText)
+    private let actorsKeyLabel = MovieDetailKeyLabel(text: Constants.actorsLabelText)
 
     private let directorValueLabel = MovieDetailValueLabel()
     private let yearOfProductionValueLabel = MovieDetailValueLabel()
@@ -80,28 +111,28 @@ final class MovieDetailView: UIView {
     private let actorsValueLabel = MovieDetailValueLabel()
 
     private lazy var directorInfoStackView = MovieDetailHorizontalStackView(
-        arrangedSubviews: [directorKeyLabel, directorValueLabel]
+        arrangedSubviews: [directorKeyLabel, stackSeperatorView, directorValueLabel]
     )
     private lazy var yearOfProductionInfoStackView = MovieDetailHorizontalStackView(
-        arrangedSubviews: [yearOfProductionKeyLabel, yearOfProductionValueLabel]
+        arrangedSubviews: [yearOfProductionKeyLabel, stackSeperatorView, yearOfProductionValueLabel]
     )
     private lazy var openDateInfoStackView = MovieDetailHorizontalStackView(
-        arrangedSubviews: [openDateKeyLabel, openDateValueLabel]
+        arrangedSubviews: [openDateKeyLabel, stackSeperatorView, openDateValueLabel]
     )
     private lazy var runningTimeInfoStackView = MovieDetailHorizontalStackView(
-        arrangedSubviews: [runningTimeKeyLabel, runningTimeValueLabel]
+        arrangedSubviews: [runningTimeKeyLabel, stackSeperatorView, runningTimeValueLabel]
     )
     private lazy var movieRatingInfoStackView = MovieDetailHorizontalStackView(
-        arrangedSubviews: [movieRatingKeyLabel, movieRatingValueLabel]
+        arrangedSubviews: [movieRatingKeyLabel, stackSeperatorView, movieRatingValueLabel]
     )
     private lazy var nationInfoStackView = MovieDetailHorizontalStackView(
-        arrangedSubviews: [nationKeyLabel, nationValueLabel]
+        arrangedSubviews: [nationKeyLabel, stackSeperatorView, nationValueLabel]
     )
     private lazy var genreInfoStackView = MovieDetailHorizontalStackView(
-        arrangedSubviews: [genreKeyLabel, genreValueLabel]
+        arrangedSubviews: [genreKeyLabel, stackSeperatorView, genreValueLabel]
     )
     private lazy var actorsInfoStackView = MovieDetailHorizontalStackView(
-        arrangedSubviews: [actorsKeyLabel, actorsValueLabel]
+        arrangedSubviews: [actorsKeyLabel, stackSeperatorView, actorsValueLabel]
     )
 
     private lazy var movieDetailVerticalStackView: UIStackView = {
@@ -116,7 +147,7 @@ final class MovieDetailView: UIView {
                                actorsInfoStackView]
         )
         stackView.alignment = .fill
-        stackView.spacing = MovieDetailViewConstant.movieDetailVerticalStackViewSpacing
+        stackView.spacing = Constants.movieDetailVerticalStackViewSpacing
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -124,6 +155,8 @@ final class MovieDetailView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        movieDetailScrollView.backgroundColor = UIColor(named: Constants.applicationBackColorName)
+        contentView.backgroundColor = UIColor(named: Constants.applicationBackColorName)
         configureHierachy()
         configureLayoutConstraints()
     }
@@ -133,8 +166,13 @@ final class MovieDetailView: UIView {
     }
 
     func configureImage(with imageData: Data) {
+        let poster = UIImage(data: imageData)
+        if let poster, poster.size.width >= poster.size.height {
+            moviePosterView.contentMode = .scaleAspectFill
+        }
         DispatchQueue.main.async {
-            self.movieImageView.image = UIImage(data: imageData)
+            self.moviePosterView.image = UIImage(data: imageData)
+            self.movieImageBackgroundView.image = self.moviePosterView.image
         }
     }
 
@@ -142,7 +180,7 @@ final class MovieDetailView: UIView {
         directorValueLabel.text = movie.director.description
         yearOfProductionValueLabel.text = movie.yearOfProduction
         openDateValueLabel.text = movie.openDate.yearMonthDaySplitDash
-        runningTimeValueLabel.text = movie.runningTime + MovieDetailViewConstant.minuteText
+        runningTimeValueLabel.text = movie.runningTime + Constants.minuteText
         movieRatingValueLabel.text = movie.movieRating ?? Constant.noneText
         nationValueLabel.text = movie.nation ?? Constant.noneText
         genreValueLabel.text = movie.genres.description
@@ -152,7 +190,9 @@ final class MovieDetailView: UIView {
     private func configureHierachy() {
         addSubview(movieDetailScrollView)
         movieDetailScrollView.addSubview(contentView)
-        contentView.addSubview(movieImageView)
+        contentView.addSubview(movieImageBackgroundView)
+        contentView.addSubview(backgroundDarkView)
+        contentView.addSubview(moviePosterView)
         contentView.addSubview(movieDetailVerticalStackView)
     }
 
@@ -160,6 +200,7 @@ final class MovieDetailView: UIView {
         configureScrollViewLayoutConstraint()
         configureContentViewLayoutConstraint()
         configureMovieImageViewLayoutConstraint()
+        configureMoviePosterBackgroundView()
         configureMovieDetailVerticalStackViewLayoutConstraint()
         configureKeyLabelayoutContraint()
     }
@@ -185,19 +226,32 @@ final class MovieDetailView: UIView {
 
     private func configureMovieImageViewLayoutConstraint() {
         NSLayoutConstraint.activate([
-            movieImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: MovieDetailViewConstant.movieImageTopInset),
-            movieImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            movieImageView.widthAnchor.constraint(equalToConstant: MovieDetailViewConstant.movieImageWidth),
-            movieImageView.heightAnchor.constraint(equalToConstant: MovieDetailViewConstant.movieImageHeight),
+            moviePosterView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.movieImageTopInset),
+            moviePosterView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            moviePosterView.widthAnchor.constraint(equalToConstant: Constants.movieImageWidth),
+            moviePosterView.heightAnchor.constraint(equalToConstant: Constants.movieImageHeight)
+        ])
+    }
+
+    private func configureMoviePosterBackgroundView() {
+        NSLayoutConstraint.activate([
+            movieImageBackgroundView.topAnchor.constraint(equalTo: moviePosterView.topAnchor),
+            movieImageBackgroundView.heightAnchor.constraint(equalToConstant: Constants.movieImageHeight),
+            movieImageBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            movieImageBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundDarkView.topAnchor.constraint(equalTo: movieImageBackgroundView.topAnchor),
+            backgroundDarkView.leadingAnchor.constraint(equalTo: movieImageBackgroundView.leadingAnchor),
+            backgroundDarkView.trailingAnchor.constraint(equalTo: movieImageBackgroundView.trailingAnchor),
+            backgroundDarkView.bottomAnchor.constraint(equalTo: movieImageBackgroundView.bottomAnchor)
         ])
     }
 
     private func configureMovieDetailVerticalStackViewLayoutConstraint() {
         NSLayoutConstraint.activate([
-            movieDetailVerticalStackView.topAnchor.constraint(equalTo: movieImageView.bottomAnchor, constant: MovieDetailViewConstant.movieDetailVerticalStackViewTopAnchorInset),
-            movieDetailVerticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: MovieDetailViewConstant.movieDetailVerticalStackViewLeadingAndTrailingInset),
-            movieDetailVerticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -MovieDetailViewConstant.movieDetailVerticalStackViewLeadingAndTrailingInset),
-            movieDetailVerticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: MovieDetailViewConstant.movieDetailVerticalStackViewBottomAnchorInset)
+            movieDetailVerticalStackView.topAnchor.constraint(equalTo: moviePosterView.bottomAnchor, constant: Constants.movieDetailVerticalStackViewTopAnchorInset),
+            movieDetailVerticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.movieDetailVerticalStackViewLeadingAndTrailingInset),
+            movieDetailVerticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.movieDetailVerticalStackViewLeadingAndTrailingInset),
+            movieDetailVerticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: Constants.movieDetailVerticalStackViewBottomAnchorInset)
         ])
     }
 
@@ -212,7 +266,7 @@ final class MovieDetailView: UIView {
          actorsKeyLabel].forEach { label in
             label.widthAnchor.constraint(
                 equalTo: movieDetailVerticalStackView.widthAnchor,
-                multiplier: MovieDetailViewConstant.keyLabelWidthMultiplierRatio).isActive = true
+                multiplier: Constants.keyLabelWidthMultiplierRatio).isActive = true
         }
     }
 
