@@ -41,7 +41,8 @@ final class DailyBoxOfficeViewController: UIViewController {
         return collectionView
     }()
     private var movies = [DailyBoxOffice]()
-    private var headerMovie = HeaderMovie() {
+    private var headerMovie: DailyBoxOffice?
+    private var headerMoviePoster: UIImage? {
         didSet {
             applySnapShot()
         }
@@ -125,7 +126,9 @@ final class DailyBoxOfficeViewController: UIViewController {
             {
                 fatalError("Cannot create header view")
             }
-            supplementaryView.configureHeader(movie: self.headerMovie)
+            if let movie = self.headerMovie, let poster = self.headerMoviePoster {
+                supplementaryView.configureHeader(with: movie, poster: poster)
+            }
             return supplementaryView
         }
         return dataSource
@@ -156,13 +159,10 @@ final class DailyBoxOfficeViewController: UIViewController {
                 let imageResult = try await networkDispatcher.performRequest(imageURLRequest)
 
                 movies = decodedMovies
-
+                headerMovie = firstRankedMovie
                 switch imageResult {
                 case .success(let data):
-                    headerMovie = HeaderMovie(title: firstRankedMovie.movieName,
-                                              rank: firstRankedMovie.rank,
-                    poster: UIImage(data: data)
-                    )
+                    headerMoviePoster = UIImage(data: data)
                 case .failure(let error):
                     print(error.errorDescription)
                 }

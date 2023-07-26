@@ -22,35 +22,36 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
     // MARK: - Properties
 
     // MARK: - UI Components
-    private let titleLabelBackground: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.layer.cornerRadius = Constants.titleLabelBackgroundheight / 2
-        view.layer.opacity = 0.5
-        return view
-    }()
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: Constants.titleLabelFontSize)
-        label.textAlignment = .center
+        label.textColor = .white
+        label.textAlignment = .left
+        label.numberOfLines = 2
         return label
     }()
-    private let rankLabelBackground: UIView = {
+    private let backgroundDarkView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
-        view.layer.cornerRadius = Constants.rankLabelBackgroundheightWidth / 2
-        view.layer.opacity = 0.5
+        view.backgroundColor = .black
+        view.layer.opacity = 0.7
         return view
     }()
-    private let rankLabel: UILabel = {
-        let label = UILabel()
-        label.font = .boldSystemFont(ofSize: Constants.rankLabelFontSize)
-        return label
+    private let topRankMark: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "TopRankMark")
+        return imageView
     }()
-    private let movieImage: UIImageView = {
+    private let movieImageBackground: UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
+        return image
+    }()
+    private let moviePoster: UIImageView = {
+        let image = UIImageView()
+        image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
+        image.contentMode = .scaleAspectFit
         return image
     }()
 
@@ -65,51 +66,53 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
     }
 
     // MARK: - Public
-    func configureHeader(movie: HeaderMovie) {
-        rankLabel.text = movie.rank
-        titleLabel.text = movie.title
-        movieImage.image = movie.poster
+    func configureHeader(with movie: DailyBoxOffice, poster: UIImage) {
+        titleLabel.text = movie.movieName
+        movieImageBackground.image = poster
+        moviePoster.image = poster
     }
     // MARK: - Private
     private func setupLayout() {
-        addSubview(movieImage)
-        addSubview(titleLabelBackground)
+        addSubview(movieImageBackground)
+        addSubview(backgroundDarkView)
+        addSubview(moviePoster)
         addSubview(titleLabel)
-        addSubview(rankLabelBackground)
-        addSubview(rankLabel)
+        addSubview(topRankMark)
 
-        movieImage.translatesAutoresizingMaskIntoConstraints = false
+        movieImageBackground.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            movieImage.topAnchor.constraint(equalTo: topAnchor),
-            movieImage.leadingAnchor.constraint(equalTo: leadingAnchor),
-            movieImage.bottomAnchor.constraint(equalTo: bottomAnchor),
-            movieImage.trailingAnchor.constraint(equalTo: trailingAnchor)
+            movieImageBackground.topAnchor.constraint(equalTo: topAnchor),
+            movieImageBackground.leadingAnchor.constraint(equalTo: leadingAnchor),
+            movieImageBackground.bottomAnchor.constraint(equalTo: bottomAnchor),
+            movieImageBackground.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: titleLabelBackground.leadingAnchor, constant: 10),
-            titleLabel.trailingAnchor.constraint(equalTo: titleLabelBackground.trailingAnchor, constant: -10),
-            titleLabel.centerYAnchor.constraint(equalTo: titleLabelBackground.centerYAnchor)
-        ])
-        titleLabelBackground.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            titleLabelBackground.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15),
-            titleLabelBackground.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
-            titleLabelBackground.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
-            titleLabelBackground.heightAnchor.constraint(equalToConstant: Constants.titleLabelBackgroundheight)
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 15),
+            titleLabel.leadingAnchor.constraint(equalTo: moviePoster.trailingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
         ])
 
-        rankLabel.translatesAutoresizingMaskIntoConstraints = false
+        topRankMark.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            rankLabel.centerXAnchor.constraint(equalTo: rankLabelBackground.centerXAnchor),
-            rankLabel.centerYAnchor.constraint(equalTo: rankLabelBackground.centerYAnchor)
+            topRankMark.widthAnchor.constraint(equalToConstant: 70),
+            topRankMark.heightAnchor.constraint(equalToConstant: 70),
+            topRankMark.topAnchor.constraint(equalTo: topAnchor),
+            topRankMark.leadingAnchor.constraint(equalTo: leadingAnchor)
         ])
-        rankLabelBackground.translatesAutoresizingMaskIntoConstraints = false
+        backgroundDarkView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            rankLabelBackground.topAnchor.constraint(equalTo: topAnchor, constant: 15),
-            rankLabelBackground.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
-            rankLabelBackground.heightAnchor.constraint(equalToConstant: Constants.rankLabelBackgroundheightWidth),
-            rankLabelBackground.widthAnchor.constraint(equalToConstant: Constants.rankLabelBackgroundheightWidth)
+            backgroundDarkView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundDarkView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundDarkView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            backgroundDarkView.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
+        moviePoster.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            moviePoster.leadingAnchor.constraint(equalTo: leadingAnchor),
+            moviePoster.centerYAnchor.constraint(equalTo: centerYAnchor),
+            moviePoster.widthAnchor.constraint(equalToConstant: 150),
+            moviePoster.heightAnchor.constraint(equalToConstant: 200)
         ])
     }
 
