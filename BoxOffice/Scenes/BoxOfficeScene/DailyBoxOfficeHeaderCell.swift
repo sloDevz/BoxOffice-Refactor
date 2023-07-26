@@ -13,6 +13,7 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
 
     private enum Constants {
         static let titleLabelFontSize = 20.0
+        static let subTitleLabelFontSize = 15.0
         static let titleLabelBackgroundheight = 30.0
         static let titleLabelBackgroundWidth = 350.0
 
@@ -25,6 +26,14 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: Constants.titleLabelFontSize)
+        label.textColor = .white
+        label.textAlignment = .left
+        label.numberOfLines = 2
+        return label
+    }()
+    private let subTitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .boldSystemFont(ofSize: Constants.subTitleLabelFontSize)
         label.textColor = .white
         label.textAlignment = .left
         label.numberOfLines = 2
@@ -67,7 +76,7 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
 
     // MARK: - Public
     func configureHeader(with movie: DailyBoxOffice, poster: UIImage) {
-        titleLabel.text = movie.movieName
+        configureTitleAndSubTitle(with: movie.movieName)
         movieImageBackground.image = poster
         moviePoster.image = poster
     }
@@ -77,6 +86,7 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
         addSubview(backgroundDarkView)
         addSubview(moviePoster)
         addSubview(titleLabel)
+        addSubview(subTitleLabel)
         addSubview(topRankMark)
 
         movieImageBackground.translatesAutoresizingMaskIntoConstraints = false
@@ -92,7 +102,12 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
             titleLabel.leadingAnchor.constraint(equalTo: moviePoster.trailingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
         ])
-
+        subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            subTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
+            subTitleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            subTitleLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor)
+        ])
         topRankMark.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             topRankMark.widthAnchor.constraint(equalToConstant: 70),
@@ -114,6 +129,17 @@ final class DailyBoxOfficeHeaderCell: UICollectionReusableView {
             moviePoster.widthAnchor.constraint(equalToConstant: 150),
             moviePoster.heightAnchor.constraint(equalToConstant: 200)
         ])
+    }
+
+    private func configureTitleAndSubTitle(with title: String) {
+        let slpitedString = title.split(separator:":")
+        let titles = slpitedString.map { string in
+            string.trimmingCharacters(in: .whitespaces)
+        }
+        let movieTitle = titles.first
+        let subTitle = titles.last
+        titleLabel.text = movieTitle
+        subTitleLabel.text = subTitle
     }
 
 
