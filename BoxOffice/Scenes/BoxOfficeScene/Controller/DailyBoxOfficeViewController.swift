@@ -9,11 +9,11 @@ import UIKit
 
 final class DailyBoxOfficeViewController: UIViewController {
 
-    // MARK: - Constant
     private enum Section {
         case main
     }
-    private enum Constant {
+    private enum Constants {
+        static let collectionViewTitle: String = "Today's Boxoffice"
         static let headerViewElementKind: String = "section-header"
         static let applicationBackColorName: String = "backgroundColor"
     }
@@ -31,10 +31,10 @@ final class DailyBoxOfficeViewController: UIViewController {
             DailyBoxOfficeCell.self,
             forCellWithReuseIdentifier: DailyBoxOfficeCell.identifier
         )
-        collectionView.backgroundColor = UIColor(named: Constant.applicationBackColorName)
+        collectionView.backgroundColor = UIColor(named: Constants.applicationBackColorName)
         collectionView.register(
             DailyBoxOfficeHeaderCell.self,
-            forSupplementaryViewOfKind: Constant.headerViewElementKind,
+            forSupplementaryViewOfKind: Constants.headerViewElementKind,
             withReuseIdentifier: DailyBoxOfficeHeaderCell.reuseableIdentifier
         )
         collectionView.delegate = self
@@ -56,11 +56,11 @@ final class DailyBoxOfficeViewController: UIViewController {
         configureCollectionView()
         addIndicatorview()
         fetchBoxOfficeData()
-        navigationItem.title = "Today's Boxoffice"
+        navigationItem.title = Constants.collectionViewTitle
     }
 
     private func configureAttributes() {
-        view.backgroundColor = UIColor(named: Constant.applicationBackColorName)
+        view.backgroundColor = UIColor(named: Constants.applicationBackColorName)
     }
 
     private func configureCollectionView() {
@@ -72,14 +72,14 @@ final class DailyBoxOfficeViewController: UIViewController {
     private func createLayout() -> UICollectionViewCompositionalLayout {
         let layout = UICollectionViewCompositionalLayout { section, layoutEnvironment in
             var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
-            configuration.backgroundColor = UIColor(named: Constant.applicationBackColorName)
+            configuration.backgroundColor = UIColor(named: Constants.applicationBackColorName)
             let headerSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
                 heightDimension: .fractionalWidth(0.5)
             )
             let header = NSCollectionLayoutBoundarySupplementaryItem(
                 layoutSize: headerSize,
-                elementKind: Constant.headerViewElementKind,
+                elementKind: Constants.headerViewElementKind,
                 alignment: .top
             )
             let listSection = NSCollectionLayoutSection.list(
@@ -201,7 +201,7 @@ extension DailyBoxOfficeViewController {
 
     private func configureRefreshControl() {
         dailyBoxOfficeCollectionView.refreshControl = UIRefreshControl()
-        dailyBoxOfficeCollectionView.refreshControl?.backgroundColor = UIColor(named: Constant.applicationBackColorName)
+        dailyBoxOfficeCollectionView.refreshControl?.backgroundColor = UIColor(named: Constants.applicationBackColorName)
         dailyBoxOfficeCollectionView.refreshControl?.addTarget(
             self,
             action: #selector(handleRefreshControl),

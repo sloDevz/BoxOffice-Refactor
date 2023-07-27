@@ -23,11 +23,11 @@ final class DailyBoxOfficeCell: UICollectionViewListCell {
 
         static let cellHeight: CGFloat = 65.0
 
-        static let UIComponentInset: CGFloat = 20.0
+        static let UIComponentInset: CGFloat = 15.0
         static let sideLayoutGuideInset: CGFloat = 25.0
 
-        static let movieTitleLabelFontSize: CGFloat = 21.0
-        static let audienceLabelFontSize: CGFloat = 14.0
+        static let movieTitleLabelFontSize: CGFloat = 16.0
+        static let audienceLabelFontSize: CGFloat = 12.0
         static let dailyRankNumberLabelFontSize: CGFloat = 35.0
         static let dailyRankChangesLabelFontSize: CGFloat = 15.0
 
@@ -82,6 +82,7 @@ final class DailyBoxOfficeCell: UICollectionViewListCell {
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.distribution = .fillProportionally
+        stackView.spacing = 5
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
         return stackView
